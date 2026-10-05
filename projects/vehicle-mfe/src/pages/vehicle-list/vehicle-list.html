@@ -1,0 +1,33 @@
+<h1>Vehicle Management</h1>
+
+<button>Add Vehicle</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Registration Number</th>
+      <th>Brand</th>
+      <th>Model</th>
+      <th>Year</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    @for (vehicle of vehicles; track vehicle.id) {
+      <tr>
+        <td>{{ vehicle.id }}</td>
+        <td>{{ vehicle.registrationNumber }}</td>
+        <td>{{ vehicle.brand }}</td>
+        <td>{{ vehicle.model }}</td>
+        <td>{{ vehicle.year }}</td>
+        <td>
+          <button>Edit</button>
+          <button>Delete</button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
