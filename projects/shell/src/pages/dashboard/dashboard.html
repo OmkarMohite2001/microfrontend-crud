@@ -1,0 +1,193 @@
+<div class="dashboard-page">
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="welcome-text">
+      <h1 class="welcome-title">Welcome to Car Management System</h1>
+      <p class="welcome-subtitle">
+        Unified Microfrontend Operations Dashboard • Host Shell (Port 4200) orchestrating 5 isolated domain remotes
+      </p>
+    </div>
+    <div class="quick-status-badge">
+      <span class="status-indicator">●</span> Microfrontends Active
+    </div>
+  </div>
+
+  <!-- Key Metrics Row (4 Cards) -->
+  <div class="metrics-grid">
+    <!-- Total Vehicles -->
+    <a routerLink="/vehicles" class="metric-card">
+      <div class="metric-content">
+        <span class="metric-label">Total Vehicles</span>
+        <span class="metric-num">{{ totalVehicles() }}</span>
+        <span class="metric-link-text">Manage Fleet Inventory →</span>
+      </div>
+      <div class="metric-icon-wrap icon-blue">🚗</div>
+    </a>
+
+    <!-- Total Customers -->
+    <a routerLink="/customers" class="metric-card">
+      <div class="metric-content">
+        <span class="metric-label">Total Customers</span>
+        <span class="metric-num">{{ totalCustomers() }}</span>
+        <span class="metric-link-text">View Client Directory →</span>
+      </div>
+      <div class="metric-icon-wrap icon-green">👥</div>
+    </a>
+
+    <!-- Total Orders -->
+    <a routerLink="/orders" class="metric-card">
+      <div class="metric-content">
+        <span class="metric-label">Total Orders</span>
+        <span class="metric-num">{{ totalOrders() }}</span>
+        <span class="metric-link-text">View Sales Pipeline →</span>
+      </div>
+      <div class="metric-icon-wrap icon-purple">📑</div>
+    </a>
+
+    <!-- Service Pending Count -->
+    <a routerLink="/services" class="metric-card">
+      <div class="metric-content">
+        <span class="metric-label">Service Pending</span>
+        <span class="metric-num">{{ servicePendingCount() }}</span>
+        <span class="metric-link-text">Inspect Workshop Tickets →</span>
+      </div>
+      <div class="metric-icon-wrap icon-amber">🔧</div>
+    </a>
+  </div>
+
+  <!-- Quick Action Buttons -->
+  <div class="quick-actions-bar">
+    <span class="actions-label">Quick Actions:</span>
+    <div class="actions-group">
+      <a routerLink="/vehicles/add" class="action-btn">
+        <span>+</span> Add Vehicle
+      </a>
+      <a routerLink="/customers/add" class="action-btn">
+        <span>+</span> New Customer
+      </a>
+      <a routerLink="/orders/add" class="action-btn">
+        <span>+</span> Create Order
+      </a>
+      <a routerLink="/services/add" class="action-btn">
+        <span>+</span> Book Service
+      </a>
+      <a routerLink="/reports" class="action-btn action-btn-accent">
+        <span>📊</span> View Reports
+      </a>
+    </div>
+  </div>
+
+  <!-- Tables Grid: Recent Orders & Recent Vehicles -->
+  <div class="dashboard-tables-grid">
+    <!-- Recent Orders Table -->
+    <div class="card table-card">
+      <div class="card-header-bar">
+        <div>
+          <h3 class="card-title">Recent Orders</h3>
+          <p class="card-subtitle">Latest purchase contracts and sales</p>
+        </div>
+        <a routerLink="/orders" class="view-more-link">View All Orders →</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Vehicle</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (o of recentOrdersWithDetails(); track o.id) {
+              <tr>
+                <td>
+                  <span class="code-badge">{{ o.orderNumber }}</span>
+                </td>
+                <td>
+                  <span class="font-semibold">{{ o.customerName }}</span>
+                </td>
+                <td>
+                  <span>{{ o.vehicleName }}</span>
+                </td>
+                <td>
+                  <span class="font-semibold">{{ formatPrice(o.amount) }}</span>
+                </td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.badge-pending]="o.status === 'Pending'"
+                    [class.badge-confirmed]="o.status === 'Confirmed'"
+                    [class.badge-completed]="o.status === 'Completed'"
+                    [class.badge-cancelled]="o.status === 'Cancelled'"
+                  >
+                    ● {{ o.status }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-cell">No order records recorded yet.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Vehicles Table -->
+    <div class="card table-card">
+      <div class="card-header-bar">
+        <div>
+          <h3 class="card-title">Recent Vehicles</h3>
+          <p class="card-subtitle">Latest additions to fleet inventory</p>
+        </div>
+        <a routerLink="/vehicles" class="view-more-link">View All Vehicles →</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Reg #</th>
+              <th>Model</th>
+              <th>Price</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (v of recentVehicles(); track v.id) {
+              <tr>
+                <td>
+                  <span class="code-badge">{{ v.registrationNumber }}</span>
+                </td>
+                <td>
+                  <span class="font-semibold">{{ v.brand }} {{ v.model }}</span>
+                </td>
+                <td>
+                  <span class="font-semibold">{{ formatPrice(v.price) }}</span>
+                </td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.badge-available]="v.status === 'Available'"
+                    [class.badge-sold]="v.status === 'Sold'"
+                    [class.badge-service]="v.status === 'Service'"
+                  >
+                    ● {{ v.status }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="empty-cell">No vehicles in inventory yet.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

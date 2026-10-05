@@ -1,0 +1,110 @@
+<div class="page-container details-page">
+  @if (notFound()) {
+    <div class="card empty-state">
+      <div class="empty-icon">❌</div>
+      <h3 class="empty-title">Order Not Found</h3>
+      <p class="empty-description">The requested order record could not be found or has been deleted.</p>
+      <a routerLink="/orders" class="btn btn-primary">Back to Orders</a>
+    </div>
+  } @else if (order()) {
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb-nav">
+          <a routerLink="/orders" class="breadcrumb-link">← Back to Orders</a>
+        </div>
+        <div class="title-with-badge">
+          <h1 class="page-title">Order {{ order()?.orderNumber }}</h1>
+          <span
+            class="status-badge"
+            [class.badge-pending]="order()?.status === 'Pending'"
+            [class.badge-confirmed]="order()?.status === 'Confirmed'"
+            [class.badge-completed]="order()?.status === 'Completed'"
+            [class.badge-cancelled]="order()?.status === 'Cancelled'"
+          >
+            ● {{ order()?.status }}
+          </span>
+        </div>
+        <p class="page-subtitle">Dated: {{ order()?.orderDate }} • Order Reference #{{ order()?.id }}</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/orders" class="btn btn-secondary">Back</a>
+        <a [routerLink]="['/orders/edit', order()?.id]" class="btn btn-primary">✏ Edit Order</a>
+      </div>
+    </div>
+
+    <div class="card details-card">
+      <div class="details-top">
+        <div class="highlight-box">
+          <span class="highlight-label">Invoice Total</span>
+          <span class="highlight-value">{{ formatAmount(order()!.amount) }}</span>
+        </div>
+        <div class="highlight-box">
+          <span class="highlight-label">Order Number</span>
+          <span class="highlight-reg">{{ order()?.orderNumber }}</span>
+        </div>
+        <div class="highlight-box">
+          <span class="highlight-label">Status</span>
+          <span class="highlight-status font-semibold">{{ order()?.status }}</span>
+        </div>
+      </div>
+
+      <!-- Customer & Vehicle Breakdown Grid -->
+      <div class="split-info-grid">
+        <!-- Customer Info -->
+        <div class="info-block">
+          <h4 class="section-title">Customer Information</h4>
+          @if (customer()) {
+            <div class="spec-list">
+              <div class="spec-row">
+                <span class="spec-label">Name</span>
+                <span class="spec-val font-semibold">{{ customer()?.name }}</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Email</span>
+                <span class="spec-val">{{ customer()?.email }}</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Phone</span>
+                <span class="spec-val">{{ customer()?.phone }}</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">City</span>
+                <span class="spec-val">{{ customer()?.city }}</span>
+              </div>
+            </div>
+          } @else {
+            <p class="text-muted">Customer ID #{{ order()?.customerId }}</p>
+          }
+        </div>
+
+        <!-- Vehicle Info -->
+        <div class="info-block">
+          <h4 class="section-title">Vehicle Information</h4>
+          @if (vehicle()) {
+            <div class="spec-list">
+              <div class="spec-row">
+                <span class="spec-label">Vehicle</span>
+                <span class="spec-val font-semibold">{{ vehicle()?.brand }} {{ vehicle()?.model }}</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Registration</span>
+                <span class="spec-val reg-badge">{{ vehicle()?.registrationNumber }}</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">Current Status</span>
+                <span class="spec-val">{{ vehicle()?.status }}</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-label">List Price</span>
+                <span class="spec-val">{{ formatAmount(vehicle()!.price) }}</span>
+              </div>
+            </div>
+          } @else {
+            <p class="text-muted">Vehicle ID #{{ order()?.vehicleId }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,33 @@
+.vehicle-cell {
+  font-size: 14px;
+}
+
+.service-type-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.service-title {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.service-desc-snippet {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cost-text {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.date-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}

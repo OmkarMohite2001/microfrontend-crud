@@ -1,0 +1,44 @@
+.customer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.customer-id {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.contact-details, .location-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.contact-email {
+  color: var(--text-main);
+}
+
+.contact-phone {
+  color: var(--text-muted);
+}
+
+.city-text {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.address-subtle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.date-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}

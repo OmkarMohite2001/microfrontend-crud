@@ -1,0 +1,87 @@
+.standalone-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.standalone-header {
+  background-color: #0f172a;
+  color: #fff;
+  border-bottom: 2px solid #2563eb;
+  padding: 12px 24px;
+}
+
+.header-content {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mfe-badge {
+  background-color: #1e293b;
+  color: #94a3b8;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.mfe-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.port-tag {
+  background-color: #d97706;
+  color: #fff;
+  font-size: 12px;
+  font-family: monospace;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.standalone-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-link {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &.host-link {
+    color: #60a5fa;
+    border-left: 1px solid #334155;
+    padding-left: 16px;
+
+    &:hover {
+      color: #93c5fd;
+    }
+  }
+}
+
+.standalone-main {
+  flex: 1;
+}

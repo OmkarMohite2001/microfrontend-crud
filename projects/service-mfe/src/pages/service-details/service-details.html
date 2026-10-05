@@ -1,0 +1,74 @@
+<div class="page-container details-page">
+  @if (notFound()) {
+    <div class="card empty-state">
+      <div class="empty-icon">❌</div>
+      <h3 class="empty-title">Record Not Found</h3>
+      <p class="empty-description">The requested service ticket could not be found or has been deleted.</p>
+      <a routerLink="/services" class="btn btn-primary">Back to Services</a>
+    </div>
+  } @else if (record()) {
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb-nav">
+          <a routerLink="/services" class="breadcrumb-link">← Back to Services</a>
+        </div>
+        <div class="title-with-badge">
+          <h1 class="page-title">{{ record()?.serviceType }}</h1>
+          <span
+            class="status-badge"
+            [class.badge-pending]="record()?.status === 'Pending'"
+            [class.badge-in-progress]="record()?.status === 'In Progress'"
+            [class.badge-completed]="record()?.status === 'Completed'"
+          >
+            ● {{ record()?.status }}
+          </span>
+        </div>
+        <p class="page-subtitle">Ticket #{{ record()?.serviceNumber }} • Service Date: {{ record()?.serviceDate }}</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/services" class="btn btn-secondary">Back</a>
+        <a [routerLink]="['/services/edit', record()?.id]" class="btn btn-primary">✏ Edit Record</a>
+      </div>
+    </div>
+
+    <div class="card details-card">
+      <div class="details-top">
+        <div class="highlight-box">
+          <span class="highlight-label">Service Cost</span>
+          <span class="highlight-value">{{ formatCost(record()!.cost) }}</span>
+        </div>
+        <div class="highlight-box">
+          <span class="highlight-label">Ticket Identifier</span>
+          <span class="highlight-reg">{{ record()?.serviceNumber }}</span>
+        </div>
+        <div class="highlight-box">
+          <span class="highlight-label">Workflow Status</span>
+          <span class="highlight-status font-semibold">{{ record()?.status }}</span>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h4 class="section-title">Serviced Vehicle</h4>
+        @if (vehicle()) {
+          <div class="vehicle-info-box">
+            <div>
+              <span class="veh-title">{{ vehicle()?.brand }} {{ vehicle()?.model }}</span>
+              <span class="reg-badge">{{ vehicle()?.registrationNumber }}</span>
+            </div>
+            <a [routerLink]="['/vehicles', vehicle()?.id]" class="view-link">View Vehicle Profile →</a>
+          </div>
+        } @else {
+          <p class="text-muted">Vehicle ID #{{ record()?.vehicleId }}</p>
+        }
+      </div>
+
+      <div class="info-section">
+        <h4 class="section-title">Scope of Work & Notes</h4>
+        <div class="desc-box">
+          <p>{{ record()?.description }}</p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

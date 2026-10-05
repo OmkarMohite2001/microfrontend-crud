@@ -4,9 +4,8 @@ module.exports = withNativeFederation({
   name: 'vehicle-mfe',
 
   exposes: {
-    // './Component': './projects/vehicle-mfe/src/app/app.ts',
-      './VehicleList': './projects/vehicle-mfe/src/pages/vehicle-list/vehicle-list.ts'
-
+    './routes': './projects/vehicle-mfe/src/pages/vehicle.routes.ts',
+    './VehicleList': './projects/vehicle-mfe/src/pages/vehicle-list/vehicle-list.ts',
   },
 
   shared: {
@@ -18,16 +17,9 @@ module.exports = withNativeFederation({
     'rxjs/fetch',
     'rxjs/testing',
     'rxjs/webSocket',
-    // Add further packages you don't need at runtime
   ],
 
-  // Please read our FAQ about sharing libs:
-  // https://shorturl.at/jmzH0
-
   features: {
-    // New feature for more performance and avoiding
-    // issues with node libs. Comment this out to
-    // get the traditional behavior:
     ignoreUnusedDeps: true,
   },
 });

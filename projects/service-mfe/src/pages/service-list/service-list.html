@@ -1,0 +1,192 @@
+<div class="page-container">
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+    <div class="toast-notification">
+      <span class="toast-icon">✓</span>
+      <span>{{ toastMessage() }}</span>
+    </div>
+  }
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Service & Maintenance</h1>
+      <p class="page-subtitle">Oversee vehicle inspections, periodic servicing, repairs, and workshop costs</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/services/add" class="btn btn-primary">
+        <span class="btn-icon">+</span>
+        <span>Book Service</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Filters & Controls Bar -->
+  <div class="card filter-bar">
+    <div class="filter-group search-box">
+      <label for="srvSearch" class="filter-label">Search</label>
+      <div class="input-with-icon">
+        <span class="input-icon">🔍</span>
+        <input
+          id="srvSearch"
+          type="text"
+          class="form-control"
+          placeholder="Search by ticket #, vehicle, repair type..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label for="srvStatus" class="filter-label">Service Status</label>
+      <select
+        id="srvStatus"
+        class="form-select"
+        [ngModel]="selectedStatus()"
+        (ngModelChange)="selectedStatus.set($event)"
+      >
+        <option value="All">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="srvSort" class="filter-label">Sort By</label>
+      <select
+        id="srvSort"
+        class="form-select"
+        [ngModel]="sortBy()"
+        (ngModelChange)="sortBy.set($event)"
+      >
+        <option value="date-desc">Date: Recent First</option>
+        <option value="date-asc">Date: Oldest First</option>
+        <option value="cost-desc">Cost: High to Low</option>
+        <option value="cost-asc">Cost: Low to High</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-meta">
+    <span>Showing <strong>{{ filteredServices().length }}</strong> of <strong>{{ services().length }}</strong> service records</span>
+  </div>
+
+  <!-- Table -->
+  @if (filteredServices().length > 0) {
+    <div class="card table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Ticket #</th>
+              <th>Vehicle</th>
+              <th>Service Type</th>
+              <th>Date</th>
+              <th>Cost</th>
+              <th>Status</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of filteredServices(); track s.id) {
+              <tr>
+                <td>
+                  <span class="service-badge">{{ s.serviceNumber }}</span>
+                </td>
+                <td>
+                  <div class="vehicle-cell">
+                    <span class="font-semibold">{{ crossVehicle.getVehicleLabel(s.vehicleId) }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="service-type-cell">
+                    <span class="service-title">{{ s.serviceType }}</span>
+                    <span class="service-desc-snippet">{{ s.description }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="date-text">{{ s.serviceDate }}</span>
+                </td>
+                <td>
+                  <span class="cost-text">{{ formatCost(s.cost) }}</span>
+                </td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.badge-pending]="s.status === 'Pending'"
+                    [class.badge-in-progress]="s.status === 'In Progress'"
+                    [class.badge-completed]="s.status === 'Completed'"
+                  >
+                    ● {{ s.status }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <div class="action-buttons">
+                    <a [routerLink]="['/services', s.id]" class="btn-action btn-action-view" title="View Details">
+                      👁 View
+                    </a>
+                    <a [routerLink]="['/services/edit', s.id]" class="btn-action btn-action-edit" title="Edit Service">
+                      ✏ Edit
+                    </a>
+                    <button type="button" (click)="confirmDelete(s)" class="btn-action btn-action-delete" title="Delete Ticket">
+                      🗑 Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <div class="card empty-state">
+      <div class="empty-icon">🔧</div>
+      <h3 class="empty-title">No service records found</h3>
+      <p class="empty-description">
+        @if (searchQuery() || selectedStatus() !== 'All') {
+          No maintenance tickets match your current filters. Try resetting search filters.
+        } @else {
+          No workshop services currently recorded. Schedule a service maintenance for a vehicle.
+        }
+      </p>
+      @if (searchQuery() || selectedStatus() !== 'All') {
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="searchQuery.set(''); selectedStatus.set('All')"
+        >
+          Reset Filters
+        </button>
+      } @else {
+        <a routerLink="/services/add" class="btn btn-primary">
+          + Book First Service
+        </a>
+      }
+    </div>
+  }
+
+  <!-- Delete Modal -->
+  @if (recordToDelete()) {
+    <div class="modal-backdrop" (click)="cancelDelete()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-warning-icon">⚠</div>
+          <h3 class="modal-title">Delete Maintenance Record</h3>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete maintenance ticket <strong>{{ recordToDelete()?.serviceNumber }}</strong>?</p>
+          <p class="modal-hint">This action will remove this service history record permanently.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="executeDelete()">Delete Record</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

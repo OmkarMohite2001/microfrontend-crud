@@ -1,0 +1,134 @@
+<div class="page-container form-page">
+  @if (notFound()) {
+    <div class="card empty-state">
+      <div class="empty-icon">❌</div>
+      <h3 class="empty-title">Order Not Found</h3>
+      <p class="empty-description">The requested order record could not be found or has been deleted.</p>
+      <a routerLink="/orders" class="btn btn-primary">Back to Orders</a>
+    </div>
+  } @else {
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb-nav">
+          <a routerLink="/orders" class="breadcrumb-link">← Back to Orders</a>
+        </div>
+        <h1 class="page-title">Edit Order #{{ orderId() }}</h1>
+        <p class="page-subtitle">Update order status, vehicle assignment, or contract valuation</p>
+      </div>
+    </div>
+
+    <div class="card form-card">
+      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-grid">
+          <!-- Order Number -->
+          <div class="form-field">
+            <label for="orderNumber" class="form-label">Order Number <span class="required">*</span></label>
+            <input
+              id="orderNumber"
+              type="text"
+              class="form-control"
+              formControlName="orderNumber"
+              [class.is-invalid]="isSubmitted && f['orderNumber'].errors"
+            />
+            @if (isSubmitted && f['orderNumber'].errors) {
+              <div class="error-message">Order number is required.</div>
+            }
+          </div>
+
+          <!-- Order Date -->
+          <div class="form-field">
+            <label for="orderDate" class="form-label">Order Date <span class="required">*</span></label>
+            <input
+              id="orderDate"
+              type="date"
+              class="form-control"
+              formControlName="orderDate"
+              [class.is-invalid]="isSubmitted && f['orderDate'].errors"
+            />
+            @if (isSubmitted && f['orderDate'].errors) {
+              <div class="error-message">Order date is required.</div>
+            }
+          </div>
+
+          <!-- Customer Select -->
+          <div class="form-field">
+            <label for="customerId" class="form-label">Customer <span class="required">*</span></label>
+            <select
+              id="customerId"
+              class="form-select"
+              formControlName="customerId"
+              [class.is-invalid]="isSubmitted && f['customerId'].errors"
+            >
+              @for (c of customers(); track c.id) {
+                <option [value]="c.id">{{ c.name }} ({{ c.city }})</option>
+              }
+            </select>
+            @if (isSubmitted && f['customerId'].errors) {
+              <div class="error-message">Customer selection is required.</div>
+            }
+          </div>
+
+          <!-- Vehicle Select -->
+          <div class="form-field">
+            <label for="vehicleId" class="form-label">Vehicle <span class="required">*</span></label>
+            <select
+              id="vehicleId"
+              class="form-select"
+              formControlName="vehicleId"
+              [class.is-invalid]="isSubmitted && f['vehicleId'].errors"
+            >
+              @for (v of selectableVehicles(); track v.id) {
+                <option [value]="v.id">
+                  {{ v.brand }} {{ v.model }} [{{ v.registrationNumber }}]
+                </option>
+              }
+            </select>
+            @if (isSubmitted && f['vehicleId'].errors) {
+              <div class="error-message">Vehicle selection is required.</div>
+            }
+          </div>
+
+          <!-- Amount -->
+          <div class="form-field">
+            <label for="amount" class="form-label">Amount (₹) <span class="required">*</span></label>
+            <input
+              id="amount"
+              type="number"
+              class="form-control"
+              formControlName="amount"
+              [class.is-invalid]="isSubmitted && f['amount'].errors"
+            />
+            @if (isSubmitted && f['amount'].errors) {
+              <div class="error-message">Amount is required.</div>
+            }
+          </div>
+
+          <!-- Status -->
+          <div class="form-field">
+            <label for="status" class="form-label">Order Status <span class="required">*</span></label>
+            <select
+              id="status"
+              class="form-select"
+              formControlName="status"
+              [class.is-invalid]="isSubmitted && f['status'].errors"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            @if (isSubmitted && f['status'].errors) {
+              <div class="error-message">Status is required.</div>
+            }
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <a routerLink="/orders" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">✓ Update Order</button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

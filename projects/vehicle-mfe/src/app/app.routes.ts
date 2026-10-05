@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { VehicleList } from '../pages/vehicle-list/vehicle-list';
+import { vehicleRoutes } from '../pages/vehicle.routes';
 
 export const routes: Routes = [
-    {path:'',component:VehicleList},
-    {path:'o',component:VehicleList},
+  { path: '', redirectTo: 'vehicles', pathMatch: 'full' },
+  { path: 'vehicles', children: vehicleRoutes },
+  { path: '**', redirectTo: 'vehicles' },
 ];

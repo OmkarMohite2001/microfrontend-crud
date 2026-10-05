@@ -1,33 +1,216 @@
-<h1>Vehicle Management</h1>
+<div class="page-container">
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+    <div class="toast-notification">
+      <span class="toast-icon">✓</span>
+      <span>{{ toastMessage() }}</span>
+    </div>
+  }
 
-<button>Add Vehicle</button>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Vehicles Management</h1>
+      <p class="page-subtitle">Manage, track, and inspect all fleet vehicles in your inventory</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/vehicles/add" class="btn btn-primary">
+        <span class="btn-icon">+</span>
+        <span>Add Vehicle</span>
+      </a>
+    </div>
+  </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Registration Number</th>
-      <th>Brand</th>
-      <th>Model</th>
-      <th>Year</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
+  <!-- Filters & Controls Bar -->
+  <div class="card filter-bar">
+    <div class="filter-group search-box">
+      <label for="searchInput" class="filter-label">Search</label>
+      <div class="input-with-icon">
+        <span class="input-icon">🔍</span>
+        <input
+          id="searchInput"
+          type="text"
+          class="form-control"
+          placeholder="Search by reg number, brand, model..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+    </div>
 
-  <tbody>
-    @for (vehicle of vehicles; track vehicle.id) {
-      <tr>
-        <td>{{ vehicle.id }}</td>
-        <td>{{ vehicle.registrationNumber }}</td>
-        <td>{{ vehicle.brand }}</td>
-        <td>{{ vehicle.model }}</td>
-        <td>{{ vehicle.year }}</td>
-        <td>
-          <button>Edit</button>
-          <button>Delete</button>
-        </td>
-      </tr>
-    }
-  </tbody>
-</table>
+    <div class="filter-group">
+      <label for="brandSelect" class="filter-label">Brand</label>
+      <select
+        id="brandSelect"
+        class="form-select"
+        [ngModel]="selectedBrand()"
+        (ngModelChange)="selectedBrand.set($event)"
+      >
+        @for (b of availableBrands(); track b) {
+          <option [value]="b">{{ b }}</option>
+        }
+      </select>
+    </div>
 
+    <div class="filter-group">
+      <label for="statusSelect" class="filter-label">Status</label>
+      <select
+        id="statusSelect"
+        class="form-select"
+        [ngModel]="selectedStatus()"
+        (ngModelChange)="selectedStatus.set($event)"
+      >
+        <option value="All">All Statuses</option>
+        <option value="Available">Available</option>
+        <option value="Sold">Sold</option>
+        <option value="Service">In Service</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="sortSelect" class="filter-label">Sort By</label>
+      <select
+        id="sortSelect"
+        class="form-select"
+        [ngModel]="sortBy()"
+        (ngModelChange)="sortBy.set($event)"
+      >
+        <option value="newest">Recently Added</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="year-desc">Year: Newest First</option>
+        <option value="brand-asc">Brand (A-Z)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-meta">
+    <span>Showing <strong>{{ filteredVehicles().length }}</strong> of <strong>{{ vehicles().length }}</strong> vehicles</span>
+  </div>
+
+  <!-- Content / Table -->
+  @if (filteredVehicles().length > 0) {
+    <div class="card table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Reg. Number</th>
+              <th>Vehicle</th>
+              <th>Year</th>
+              <th>Fuel & Color</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (v of filteredVehicles(); track v.id) {
+              <tr>
+                <td>
+                  <span class="reg-badge">{{ v.registrationNumber }}</span>
+                </td>
+                <td>
+                  <div class="vehicle-info">
+                    <span class="vehicle-title">{{ v.brand }} {{ v.model }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="year-text">{{ v.year }}</span>
+                </td>
+                <td>
+                  <div class="badge-combo">
+                    <span class="pill-badge pill-neutral">{{ v.fuelType }}</span>
+                    <span class="pill-badge pill-subtle">{{ v.color }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="price-text">{{ formatPrice(v.price) }}</span>
+                </td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.badge-available]="v.status === 'Available'"
+                    [class.badge-sold]="v.status === 'Sold'"
+                    [class.badge-service]="v.status === 'Service'"
+                  >
+                    @if (v.status === 'Available') { ● Available }
+                    @else if (v.status === 'Sold') { ● Sold }
+                    @else { ● In Service }
+                  </span>
+                </td>
+                <td class="text-right">
+                  <div class="action-buttons">
+                    <a [routerLink]="['/vehicles', v.id]" class="btn-action btn-action-view" title="View Details">
+                      👁 View
+                    </a>
+                    <a [routerLink]="['/vehicles/edit', v.id]" class="btn-action btn-action-edit" title="Edit Vehicle">
+                      ✏ Edit
+                    </a>
+                    <button type="button" (click)="confirmDelete(v)" class="btn-action btn-action-delete" title="Delete Vehicle">
+                      🗑 Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <div class="card empty-state">
+      <div class="empty-icon">🚗</div>
+      <h3 class="empty-title">No vehicles found</h3>
+      <p class="empty-description">
+        @if (searchQuery() || selectedBrand() !== 'All' || selectedStatus() !== 'All') {
+          No vehicles match your current filter criteria. Try adjusting or clearing your filters.
+        } @else {
+          Your vehicle inventory is currently empty. Get started by adding your first vehicle.
+        }
+      </p>
+      @if (searchQuery() || selectedBrand() !== 'All' || selectedStatus() !== 'All') {
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="searchQuery.set(''); selectedBrand.set('All'); selectedStatus.set('All')"
+        >
+          Reset Filters
+        </button>
+      } @else {
+        <a routerLink="/vehicles/add" class="btn btn-primary">
+          + Add First Vehicle
+        </a>
+      }
+    </div>
+  }
+
+  <!-- Delete Confirmation Modal -->
+  @if (vehicleToDelete()) {
+    <div class="modal-backdrop" (click)="cancelDelete()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-warning-icon">⚠</div>
+          <h3 class="modal-title">Confirm Deletion</h3>
+        </div>
+        <div class="modal-body">
+          <p>
+            Are you sure you want to delete vehicle <strong>{{ vehicleToDelete()?.registrationNumber }}</strong>
+            ({{ vehicleToDelete()?.brand }} {{ vehicleToDelete()?.model }})?
+          </p>
+          <p class="modal-hint">This action cannot be undone and will permanently remove this record from storage.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancelDelete()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger" (click)="executeDelete()">
+            Delete Vehicle
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

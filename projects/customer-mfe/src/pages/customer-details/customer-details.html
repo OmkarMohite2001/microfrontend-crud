@@ -1,0 +1,78 @@
+<div class="page-container details-page">
+  @if (notFound()) {
+    <div class="card empty-state">
+      <div class="empty-icon">❌</div>
+      <h3 class="empty-title">Customer Not Found</h3>
+      <p class="empty-description">The requested customer could not be found or has been removed.</p>
+      <a routerLink="/customers" class="btn btn-primary">Back to Customer Directory</a>
+    </div>
+  } @else if (customer()) {
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb-nav">
+          <a routerLink="/customers" class="breadcrumb-link">← Back to Customers</a>
+        </div>
+        <div class="title-with-badge">
+          <h1 class="page-title">{{ customer()?.name }}</h1>
+          <span
+            class="status-badge"
+            [class.badge-active]="customer()?.status === 'Active'"
+            [class.badge-inactive]="customer()?.status === 'Inactive'"
+          >
+            ● {{ customer()?.status }} Account
+          </span>
+        </div>
+        <p class="page-subtitle">Customer Account #{{ customer()?.id }} • Registered on {{ customer()?.registrationDate }}</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/customers" class="btn btn-secondary">Back</a>
+        <a [routerLink]="['/customers/edit', customer()?.id]" class="btn btn-primary">✏ Edit Customer</a>
+      </div>
+    </div>
+
+    <div class="card details-card">
+      <div class="contact-card-grid">
+        <div class="contact-box">
+          <span class="box-label">Email Address</span>
+          <span class="box-value">{{ customer()?.email }}</span>
+        </div>
+        <div class="contact-box">
+          <span class="box-label">Phone Number</span>
+          <span class="box-value">{{ customer()?.phone }}</span>
+        </div>
+        <div class="contact-box">
+          <span class="box-label">City</span>
+          <span class="box-value">{{ customer()?.city }}</span>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h4 class="section-title">Address & Billing Information</h4>
+        <div class="address-display">
+          <p class="address-full">📍 {{ customer()?.address }}, {{ customer()?.city }}</p>
+        </div>
+      </div>
+
+      <div class="quick-links-section">
+        <h4 class="section-title">Related Actions</h4>
+        <div class="quick-links-grid">
+          <a routerLink="/orders/add" class="quick-action-card">
+            <span class="qa-icon">📑</span>
+            <div>
+              <span class="qa-title">New Order for {{ customer()?.name }}</span>
+              <span class="qa-desc">Select vehicle from inventory and create purchase invoice</span>
+            </div>
+          </a>
+          <a routerLink="/orders" class="quick-action-card">
+            <span class="qa-icon">📋</span>
+            <div>
+              <span class="qa-title">View All Orders</span>
+              <span class="qa-desc">See complete order history across all clients</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  }
+</div>

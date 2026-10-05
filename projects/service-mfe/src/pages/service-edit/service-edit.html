@@ -1,0 +1,145 @@
+<div class="page-container form-page">
+  @if (notFound()) {
+    <div class="card empty-state">
+      <div class="empty-icon">❌</div>
+      <h3 class="empty-title">Service Record Not Found</h3>
+      <p class="empty-description">The requested maintenance record could not be found or has been removed.</p>
+      <a routerLink="/services" class="btn btn-primary">Back to Services</a>
+    </div>
+  } @else {
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb-nav">
+          <a routerLink="/services" class="breadcrumb-link">← Back to Services</a>
+        </div>
+        <h1 class="page-title">Edit Service Record #{{ serviceId() }}</h1>
+        <p class="page-subtitle">Update maintenance status, repair expenses, or mechanic notes</p>
+      </div>
+    </div>
+
+    <div class="card form-card">
+      <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-grid">
+          <!-- Service Ticket Number -->
+          <div class="form-field">
+            <label for="serviceNumber" class="form-label">Service Ticket # <span class="required">*</span></label>
+            <input
+              id="serviceNumber"
+              type="text"
+              class="form-control"
+              formControlName="serviceNumber"
+              [class.is-invalid]="isSubmitted && f['serviceNumber'].errors"
+            />
+            @if (isSubmitted && f['serviceNumber'].errors) {
+              <div class="error-message">Service ticket number is required.</div>
+            }
+          </div>
+
+          <!-- Service Date -->
+          <div class="form-field">
+            <label for="serviceDate" class="form-label">Service Date <span class="required">*</span></label>
+            <input
+              id="serviceDate"
+              type="date"
+              class="form-control"
+              formControlName="serviceDate"
+              [class.is-invalid]="isSubmitted && f['serviceDate'].errors"
+            />
+            @if (isSubmitted && f['serviceDate'].errors) {
+              <div class="error-message">Service date is required.</div>
+            }
+          </div>
+
+          <!-- Vehicle Select -->
+          <div class="form-field">
+            <label for="vehicleId" class="form-label">Vehicle <span class="required">*</span></label>
+            <select
+              id="vehicleId"
+              class="form-select"
+              formControlName="vehicleId"
+              [class.is-invalid]="isSubmitted && f['vehicleId'].errors"
+            >
+              @for (v of vehicles(); track v.id) {
+                <option [value]="v.id">
+                  {{ v.brand }} {{ v.model }} ({{ v.registrationNumber }})
+                </option>
+              }
+            </select>
+            @if (isSubmitted && f['vehicleId'].errors) {
+              <div class="error-message">Vehicle selection is required.</div>
+            }
+          </div>
+
+          <!-- Service Type -->
+          <div class="form-field">
+            <label for="serviceType" class="form-label">Service Type <span class="required">*</span></label>
+            <input
+              id="serviceType"
+              type="text"
+              class="form-control"
+              formControlName="serviceType"
+              placeholder="e.g. Periodic Maintenance"
+              [class.is-invalid]="isSubmitted && f['serviceType'].errors"
+            />
+            @if (isSubmitted && f['serviceType'].errors) {
+              <div class="error-message">Service type is required.</div>
+            }
+          </div>
+
+          <!-- Cost -->
+          <div class="form-field">
+            <label for="cost" class="form-label">Cost (₹) <span class="required">*</span></label>
+            <input
+              id="cost"
+              type="number"
+              class="form-control"
+              formControlName="cost"
+              [class.is-invalid]="isSubmitted && f['cost'].errors"
+            />
+            @if (isSubmitted && f['cost'].errors) {
+              <div class="error-message">Cost is required.</div>
+            }
+          </div>
+
+          <!-- Status -->
+          <div class="form-field">
+            <label for="status" class="form-label">Service Status <span class="required">*</span></label>
+            <select
+              id="status"
+              class="form-select"
+              formControlName="status"
+              [class.is-invalid]="isSubmitted && f['status'].errors"
+            >
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+            @if (isSubmitted && f['status'].errors) {
+              <div class="error-message">Status is required.</div>
+            }
+          </div>
+
+          <!-- Description -->
+          <div class="form-field full-width">
+            <label for="description" class="form-label">Work Description & Notes <span class="required">*</span></label>
+            <textarea
+              id="description"
+              class="form-control"
+              formControlName="description"
+              [class.is-invalid]="isSubmitted && f['description'].errors"
+            ></textarea>
+            @if (isSubmitted && f['description'].errors) {
+              <div class="error-message">Description is required.</div>
+            }
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <a routerLink="/services" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">✓ Update Record</button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

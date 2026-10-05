@@ -1,0 +1,190 @@
+<div class="page-container">
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+    <div class="toast-notification">
+      <span class="toast-icon">✓</span>
+      <span>{{ toastMessage() }}</span>
+    </div>
+  }
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Customer Directory</h1>
+      <p class="page-subtitle">View and manage registered clients, contact records, and account statuses</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/customers/add" class="btn btn-primary">
+        <span class="btn-icon">+</span>
+        <span>New Customer</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Filters & Controls Bar -->
+  <div class="card filter-bar">
+    <div class="filter-group search-box">
+      <label for="custSearch" class="filter-label">Search</label>
+      <div class="input-with-icon">
+        <span class="input-icon">🔍</span>
+        <input
+          id="custSearch"
+          type="text"
+          class="form-control"
+          placeholder="Search by name, email, phone, city..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label for="custStatus" class="filter-label">Account Status</label>
+      <select
+        id="custStatus"
+        class="form-select"
+        [ngModel]="selectedStatus()"
+        (ngModelChange)="selectedStatus.set($event)"
+      >
+        <option value="All">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="custSort" class="filter-label">Sort By</label>
+      <select
+        id="custSort"
+        class="form-select"
+        [ngModel]="sortBy()"
+        (ngModelChange)="sortBy.set($event)"
+      >
+        <option value="name-asc">Name (A-Z)</option>
+        <option value="name-desc">Name (Z-A)</option>
+        <option value="date-desc">Registered: Newest</option>
+        <option value="date-asc">Registered: Oldest</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-meta">
+    <span>Showing <strong>{{ filteredCustomers().length }}</strong> of <strong>{{ customers().length }}</strong> customers</span>
+  </div>
+
+  <!-- Table -->
+  @if (filteredCustomers().length > 0) {
+    <div class="card table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Contact Details</th>
+              <th>Location</th>
+              <th>Registered</th>
+              <th>Status</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of filteredCustomers(); track c.id) {
+              <tr>
+                <td>
+                  <div class="customer-info">
+                    <span class="customer-name font-semibold">{{ c.name }}</span>
+                    <span class="customer-id">ID #{{ c.id }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="contact-details">
+                    <span class="contact-email">✉ {{ c.email }}</span>
+                    <span class="contact-phone">📞 {{ c.phone }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="location-details">
+                    <span class="city-text">📍 {{ c.city }}</span>
+                    <span class="address-subtle">{{ c.address }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="date-text">{{ c.registrationDate }}</span>
+                </td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.badge-active]="c.status === 'Active'"
+                    [class.badge-inactive]="c.status === 'Inactive'"
+                  >
+                    ● {{ c.status }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <div class="action-buttons">
+                    <a [routerLink]="['/customers', c.id]" class="btn-action btn-action-view" title="View Details">
+                      👁 View
+                    </a>
+                    <a [routerLink]="['/customers/edit', c.id]" class="btn-action btn-action-edit" title="Edit Customer">
+                      ✏ Edit
+                    </a>
+                    <button type="button" (click)="confirmDelete(c)" class="btn-action btn-action-delete" title="Delete Customer">
+                      🗑 Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <div class="card empty-state">
+      <div class="empty-icon">👥</div>
+      <h3 class="empty-title">No customers found</h3>
+      <p class="empty-description">
+        @if (searchQuery() || selectedStatus() !== 'All') {
+          No customer records match your filter criteria. Try adjusting your search query.
+        } @else {
+          Your customer database is empty. Add a new customer to start creating orders and records.
+        }
+      </p>
+      @if (searchQuery() || selectedStatus() !== 'All') {
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="searchQuery.set(''); selectedStatus.set('All')"
+        >
+          Reset Filters
+        </button>
+      } @else {
+        <a routerLink="/customers/add" class="btn btn-primary">
+          + Add First Customer
+        </a>
+      }
+    </div>
+  }
+
+  <!-- Delete Modal -->
+  @if (customerToDelete()) {
+    <div class="modal-backdrop" (click)="cancelDelete()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-warning-icon">⚠</div>
+          <h3 class="modal-title">Confirm Delete</h3>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to remove customer <strong>{{ customerToDelete()?.name }}</strong>?</p>
+          <p class="modal-hint">This action cannot be undone. Orders associated with this customer will remain in history.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="executeDelete()">Delete Customer</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

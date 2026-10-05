@@ -1,1 +1,181 @@
-<router-outlet></router-outlet>
+@if (isLoggedOut()) {
+  <!-- Logged Out Screen -->
+  <div class="logged-out-screen">
+    <div class="logged-out-card">
+      <div class="logout-icon">🔒</div>
+      <h2 class="logout-title">You have been signed out</h2>
+      <p class="logout-desc">Thank you for using the Car Management Microfrontend System.</p>
+      <button type="button" class="btn btn-primary" (click)="reLogin()">
+        Sign In Again
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="shell-container" [class.sidebar-collapsed]="!isSidebarOpen()">
+    <!-- Mobile Backdrop -->
+    @if (isSidebarOpen()) {
+      <div class="mobile-backdrop" (click)="toggleSidebar()"></div>
+    }
+
+    <!-- Left Sidebar -->
+    <aside class="shell-sidebar">
+      <!-- Sidebar Header / Brand -->
+      <div class="sidebar-brand">
+        <div class="brand-logo-icon">🚗</div>
+        <div class="brand-info">
+          <span class="brand-name">Car Management</span>
+          <span class="brand-badge">Microfrontend Suite</span>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Operations</div>
+
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeSidebarOnMobile()"
+          class="nav-item"
+        >
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+
+        <a
+          routerLink="/vehicles"
+          routerLinkActive="active"
+          (click)="closeSidebarOnMobile()"
+          class="nav-item"
+        >
+          <span class="nav-icon">🚘</span>
+          <span class="nav-text">Vehicles</span>
+          <span class="nav-port-pill">4201</span>
+        </a>
+
+        <a
+          routerLink="/customers"
+          routerLinkActive="active"
+          (click)="closeSidebarOnMobile()"
+          class="nav-item"
+        >
+          <span class="nav-icon">👥</span>
+          <span class="nav-text">Customers</span>
+          <span class="nav-port-pill">4202</span>
+        </a>
+
+        <a
+          routerLink="/orders"
+          routerLinkActive="active"
+          (click)="closeSidebarOnMobile()"
+          class="nav-item"
+        >
+          <span class="nav-icon">📑</span>
+          <span class="nav-text">Orders</span>
+          <span class="nav-port-pill">4203</span>
+        </a>
+
+        <a
+          routerLink="/services"
+          routerLinkActive="active"
+          (click)="closeSidebarOnMobile()"
+          class="nav-item"
+        >
+          <span class="nav-icon">🔧</span>
+          <span class="nav-text">Services</span>
+          <span class="nav-port-pill">4204</span>
+        </a>
+
+        <div class="nav-section-title">Intelligence</div>
+
+        <a
+          routerLink="/reports"
+          routerLinkActive="active"
+          (click)="closeSidebarOnMobile()"
+          class="nav-item"
+        >
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Reports</span>
+          <span class="nav-port-pill">4205</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer / Architecture Info -->
+      <div class="sidebar-footer">
+        <div class="arch-badge">
+          <span class="arch-dot"></span>
+          <span>Native Federation 21.2</span>
+        </div>
+        <button type="button" class="btn-sidebar-logout" (click)="openLogoutModal()">
+          <span class="logout-icon-small">🚪</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <div class="shell-main-wrapper">
+      <!-- Top Header -->
+      <header class="shell-header">
+        <div class="header-left">
+          <button type="button" class="btn-toggle-sidebar" (click)="toggleSidebar()" title="Toggle Sidebar">
+            ☰
+          </button>
+          <span class="header-app-title">Car Management System</span>
+          <span class="env-pill">Host Shell :4200</span>
+        </div>
+
+        <div class="header-right">
+          <div class="system-status-pill">
+            <span class="status-dot"></span>
+            <span class="status-label">System Active</span>
+          </div>
+
+          <!-- User Profile Area -->
+          <div class="user-profile">
+            <div class="user-avatar">OA</div>
+            <div class="user-info">
+              <span class="user-name">Omkar Admin</span>
+              <span class="user-role">Fleet Manager</span>
+            </div>
+          </div>
+
+          <!-- Logout Button -->
+          <button type="button" class="btn-header-logout" (click)="openLogoutModal()" title="Logout">
+            <span>Logout</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dynamic Content / Router Outlet -->
+      <main class="shell-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  @if (isLogoutModalOpen()) {
+    <div class="modal-backdrop" (click)="cancelLogout()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-warning-icon">🚪</div>
+          <h3 class="modal-title">Sign Out Confirmation</h3>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to end your current administrative session?</p>
+          <p class="modal-hint">You can sign back in at any time to resume managing your fleet.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancelLogout()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger" (click)="confirmLogout()">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+}

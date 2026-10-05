@@ -1,0 +1,143 @@
+<div class="page-container form-page">
+  @if (notFound()) {
+    <div class="card empty-state">
+      <div class="empty-icon">❌</div>
+      <h3 class="empty-title">Customer Not Found</h3>
+      <p class="empty-description">The requested customer could not be found or has been removed.</p>
+      <a routerLink="/customers" class="btn btn-primary">Back to Customer Directory</a>
+    </div>
+  } @else {
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb-nav">
+          <a routerLink="/customers" class="breadcrumb-link">← Back to Customers</a>
+        </div>
+        <h1 class="page-title">Edit Customer Profile</h1>
+        <p class="page-subtitle">Update contact information, address, or account status for customer #{{ customerId() }}</p>
+      </div>
+    </div>
+
+    <div class="card form-card">
+      <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-grid">
+          <!-- Full Name -->
+          <div class="form-field">
+            <label for="name" class="form-label">Full Name <span class="required">*</span></label>
+            <input
+              id="name"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder="e.g. Rajesh Sharma"
+              [class.is-invalid]="isSubmitted && f['name'].errors"
+            />
+            @if (isSubmitted && f['name'].errors) {
+              <div class="error-message">Customer name is required.</div>
+            }
+          </div>
+
+          <!-- Email -->
+          <div class="form-field">
+            <label for="email" class="form-label">Email Address <span class="required">*</span></label>
+            <input
+              id="email"
+              type="email"
+              class="form-control"
+              formControlName="email"
+              placeholder="e.g. rajesh.sharma@example.com"
+              [class.is-invalid]="isSubmitted && f['email'].errors"
+            />
+            @if (isSubmitted && f['email'].errors) {
+              <div class="error-message">Valid email is required.</div>
+            }
+          </div>
+
+          <!-- Phone -->
+          <div class="form-field">
+            <label for="phone" class="form-label">Phone Number <span class="required">*</span></label>
+            <input
+              id="phone"
+              type="text"
+              class="form-control"
+              formControlName="phone"
+              placeholder="e.g. +91 98230 11223"
+              [class.is-invalid]="isSubmitted && f['phone'].errors"
+            />
+            @if (isSubmitted && f['phone'].errors) {
+              <div class="error-message">Phone number is required.</div>
+            }
+          </div>
+
+          <!-- City -->
+          <div class="form-field">
+            <label for="city" class="form-label">City <span class="required">*</span></label>
+            <input
+              id="city"
+              type="text"
+              class="form-control"
+              formControlName="city"
+              placeholder="e.g. Mumbai"
+              [class.is-invalid]="isSubmitted && f['city'].errors"
+            />
+            @if (isSubmitted && f['city'].errors) {
+              <div class="error-message">City is required.</div>
+            }
+          </div>
+
+          <!-- Address -->
+          <div class="form-field full-width">
+            <label for="address" class="form-label">Street Address <span class="required">*</span></label>
+            <textarea
+              id="address"
+              class="form-control"
+              formControlName="address"
+              placeholder="Street address..."
+              [class.is-invalid]="isSubmitted && f['address'].errors"
+            ></textarea>
+            @if (isSubmitted && f['address'].errors) {
+              <div class="error-message">Street address is required.</div>
+            }
+          </div>
+
+          <!-- Registration Date -->
+          <div class="form-field">
+            <label for="registrationDate" class="form-label">Registration Date <span class="required">*</span></label>
+            <input
+              id="registrationDate"
+              type="date"
+              class="form-control"
+              formControlName="registrationDate"
+              [class.is-invalid]="isSubmitted && f['registrationDate'].errors"
+            />
+            @if (isSubmitted && f['registrationDate'].errors) {
+              <div class="error-message">Registration date is required.</div>
+            }
+          </div>
+
+          <!-- Status -->
+          <div class="form-field">
+            <label for="status" class="form-label">Account Status <span class="required">*</span></label>
+            <select
+              id="status"
+              class="form-select"
+              formControlName="status"
+              [class.is-invalid]="isSubmitted && f['status'].errors"
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            @if (isSubmitted && f['status'].errors) {
+              <div class="error-message">Status is required.</div>
+            }
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <a routerLink="/customers" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">✓ Update Customer</button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

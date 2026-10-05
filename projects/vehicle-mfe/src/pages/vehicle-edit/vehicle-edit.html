@@ -1,1 +1,207 @@
-<p>vehicle-edit works!</p>
+<div class="page-container form-page">
+  @if (vehicleNotFound()) {
+    <div class="card empty-state">
+      <div class="empty-icon">❌</div>
+      <h3 class="empty-title">Vehicle Not Found</h3>
+      <p class="empty-description">The requested vehicle could not be found or has been deleted.</p>
+      <a routerLink="/vehicles" class="btn btn-primary">Back to Vehicle List</a>
+    </div>
+  } @else {
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb-nav">
+          <a routerLink="/vehicles" class="breadcrumb-link">← Back to Vehicles</a>
+        </div>
+        <h1 class="page-title">Edit Vehicle #{{ vehicleId() }}</h1>
+        <p class="page-subtitle">Update registration, pricing, or status details for this vehicle</p>
+      </div>
+    </div>
+
+    <div class="card form-card">
+      <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-grid">
+          <!-- Registration Number -->
+          <div class="form-field">
+            <label for="registrationNumber" class="form-label">
+              Registration Number <span class="required">*</span>
+            </label>
+            <input
+              id="registrationNumber"
+              type="text"
+              class="form-control"
+              formControlName="registrationNumber"
+              placeholder="e.g. MH-12-AB-1234"
+              [class.is-invalid]="isSubmitted && f['registrationNumber'].errors"
+            />
+            @if (isSubmitted && f['registrationNumber'].errors) {
+              <div class="error-message">
+                @if (f['registrationNumber'].errors['required']) {
+                  Registration number is required.
+                }
+                @if (f['registrationNumber'].errors['pattern']) {
+                  Please enter a valid registration format (e.g., MH-12-AB-1234).
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Brand -->
+          <div class="form-field">
+            <label for="brand" class="form-label">
+              Brand <span class="required">*</span>
+            </label>
+            <input
+              id="brand"
+              type="text"
+              class="form-control"
+              formControlName="brand"
+              placeholder="e.g. Tata, Mahindra, Toyota"
+              [class.is-invalid]="isSubmitted && f['brand'].errors"
+            />
+            @if (isSubmitted && f['brand'].errors) {
+              <div class="error-message">
+                Brand is required.
+              </div>
+            }
+          </div>
+
+          <!-- Model -->
+          <div class="form-field">
+            <label for="model" class="form-label">
+              Model <span class="required">*</span>
+            </label>
+            <input
+              id="model"
+              type="text"
+              class="form-control"
+              formControlName="model"
+              placeholder="e.g. Nexon EV, XUV700"
+              [class.is-invalid]="isSubmitted && f['model'].errors"
+            />
+            @if (isSubmitted && f['model'].errors) {
+              <div class="error-message">
+                Model is required.
+              </div>
+            }
+          </div>
+
+          <!-- Year -->
+          <div class="form-field">
+            <label for="year" class="form-label">
+              Year of Manufacture <span class="required">*</span>
+            </label>
+            <input
+              id="year"
+              type="number"
+              class="form-control"
+              formControlName="year"
+              placeholder="e.g. 2024"
+              [class.is-invalid]="isSubmitted && f['year'].errors"
+            />
+            @if (isSubmitted && f['year'].errors) {
+              <div class="error-message">
+                Please enter a valid year (1980 - present).
+              </div>
+            }
+          </div>
+
+          <!-- Color -->
+          <div class="form-field">
+            <label for="color" class="form-label">
+              Color <span class="required">*</span>
+            </label>
+            <input
+              id="color"
+              type="text"
+              class="form-control"
+              formControlName="color"
+              placeholder="e.g. Pearl White, Midnight Black"
+              [class.is-invalid]="isSubmitted && f['color'].errors"
+            />
+            @if (isSubmitted && f['color'].errors) {
+              <div class="error-message">
+                Color is required.
+              </div>
+            }
+          </div>
+
+          <!-- Fuel Type -->
+          <div class="form-field">
+            <label for="fuelType" class="form-label">
+              Fuel Type <span class="required">*</span>
+            </label>
+            <select
+              id="fuelType"
+              class="form-select"
+              formControlName="fuelType"
+              [class.is-invalid]="isSubmitted && f['fuelType'].errors"
+            >
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Electric">Electric</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="CNG">CNG</option>
+            </select>
+            @if (isSubmitted && f['fuelType'].errors) {
+              <div class="error-message">
+                Fuel type is required.
+              </div>
+            }
+          </div>
+
+          <!-- Price -->
+          <div class="form-field">
+            <label for="price" class="form-label">
+              Price (₹) <span class="required">*</span>
+            </label>
+            <input
+              id="price"
+              type="number"
+              class="form-control"
+              formControlName="price"
+              placeholder="e.g. 1500000"
+              [class.is-invalid]="isSubmitted && f['price'].errors"
+            />
+            @if (isSubmitted && f['price'].errors) {
+              <div class="error-message">
+                Please enter a valid price (minimum ₹1,000).
+              </div>
+            }
+          </div>
+
+          <!-- Status -->
+          <div class="form-field">
+            <label for="status" class="form-label">
+              Inventory Status <span class="required">*</span>
+            </label>
+            <select
+              id="status"
+              class="form-select"
+              formControlName="status"
+              [class.is-invalid]="isSubmitted && f['status'].errors"
+            >
+              <option value="Available">Available</option>
+              <option value="Sold">Sold</option>
+              <option value="Service">In Service</option>
+            </select>
+            @if (isSubmitted && f['status'].errors) {
+              <div class="error-message">
+                Status is required.
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <a routerLink="/vehicles" class="btn btn-secondary">
+            Cancel
+          </a>
+          <button type="submit" class="btn btn-primary">
+            ✓ Update Vehicle
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

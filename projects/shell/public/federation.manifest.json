@@ -1,3 +1,7 @@
 {
-  "vehicle": "http://localhost:4201/remoteEntry.json"
+  "vehicle": "http://localhost:4201/remoteEntry.json",
+  "customer": "http://localhost:4202/remoteEntry.json",
+  "order": "http://localhost:4203/remoteEntry.json",
+  "service": "http://localhost:4204/remoteEntry.json",
+  "reports": "http://localhost:4205/remoteEntry.json"
 }

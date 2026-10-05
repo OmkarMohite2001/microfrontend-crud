@@ -1,0 +1,19 @@
+<div class="standalone-wrapper">
+  <header class="standalone-header">
+    <div class="header-content">
+      <div class="logo-area">
+        <span class="mfe-badge">MFE Remote</span>
+        <span class="mfe-title">👥 Customer Microfrontend</span>
+        <span class="port-tag">Port 4202</span>
+      </div>
+      <nav class="standalone-nav">
+        <a routerLink="/customers" class="nav-link">Customer Directory</a>
+        <a routerLink="/customers/add" class="nav-link">+ New Customer</a>
+        <a href="http://localhost:4200" class="nav-link host-link">⮌ Go to Host Shell (4200)</a>
+      </nav>
+    </div>
+  </header>
+  <main class="standalone-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
